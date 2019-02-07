@@ -10,3 +10,13 @@
     border: 1px solid green;
 
 }
+
+/*
+#goodsArea {
+    display: flex;
+    flex-direction: column;
+}
+#goodsArea >div {
+    display: flex;
+    justify-content: center;
+}*/

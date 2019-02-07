@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import {Layout, Menu, Breadcrumb, Icon, Form,} from 'antd';
+import {Row, Col} from 'antd';
 import './PageLayout.css'
 import NormalLoginForm from '../LoginForm/NormalLoginForm'
-
-
-
-
+import Good from "../Goods/Good";
+import HttpData from "../Data/httpData"
 
 const WrappedNormalLoginForm = Form.create({name: 'normal_login'})(NormalLoginForm);
 const {
@@ -15,16 +14,48 @@ const SubMenu = Menu.SubMenu;
 
 class SiderDemo extends React.Component {
 
-    state = {
-        collapsed: false,
+    constructor(props) {
+        super(props);
+        this.state = {
+            allProductsData: null,
+            collapsed: false
+        };
     };
+
 
     onCollapse = (collapsed) => {
         console.log(collapsed);
         this.setState({collapsed});
     };
 
+
+    componentDidMount() {
+        new HttpData().postData(`http://job.goodstudio.by/api/products/`).then(
+            allProductsData => {
+                this.setState({allProductsData});
+
+            },
+
+            status => {
+                console.log(status);
+            }
+        );
+    }
+
+
     render() {
+        let goodsToPage;
+        if (this.state.allProductsData) {
+            goodsToPage = (this.state.allProductsData.products).map((item, i) => (
+                <Good
+                    id={item._id}
+                    key={item._id}
+                    uid={item.uid}
+                    name={item.name}
+                    picture={item.picture}
+                />
+            ));
+        }
 
         return (
             <Layout style={{minHeight: '100vh'}}>
@@ -37,7 +68,9 @@ class SiderDemo extends React.Component {
                     <div className="logo"/>
 
                     <div className="sup">
+
                         <WrappedNormalLoginForm/>
+
                     </div>
 
                     <Menu theme="light" defaultSelectedKeys={['1']} mode="inline">
@@ -80,8 +113,11 @@ class SiderDemo extends React.Component {
                             <Breadcrumb.Item>User</Breadcrumb.Item>
                             <Breadcrumb.Item>Bill</Breadcrumb.Item>
                         </Breadcrumb>
-                        <div style={{padding: 24, background: '#fff', minHeight: 360}}>
-                            Bill is a cat.
+
+                        <div id="goodsArea" style={{padding: 24, background: '#fff', minHeight: 360}}>
+
+                            <Row justify={"space-around"}>{goodsToPage}</Row>
+
                         </div>
                     </Content>
                     <Footer style={{textAlign: 'center'}}>
@@ -95,5 +131,3 @@ class SiderDemo extends React.Component {
 
 export default SiderDemo;
 
-/*
-ReactDOM.render(<SiderDemo/>, mountNode);*/
