@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Layout, Menu, Breadcrumb, Icon, Form,} from 'antd';
+import {Layout, Menu, Breadcrumb, Icon, Form, Button} from 'antd';
 import {Row, Col} from 'antd';
 import './PageLayout.css'
 import NormalLoginForm from '../LoginForm/NormalLoginForm'
@@ -18,7 +18,9 @@ class SiderDemo extends React.Component {
         super(props);
         this.state = {
             allProductsData: null,
-            collapsed: false
+            allCategories: null,
+            collapsed: false,
+            logIn: false
         };
     };
 
@@ -27,7 +29,6 @@ class SiderDemo extends React.Component {
         console.log(collapsed);
         this.setState({collapsed});
     };
-
 
     componentDidMount() {
         new HttpData().postData(`http://job.goodstudio.by/api/products/`).then(
@@ -40,7 +41,24 @@ class SiderDemo extends React.Component {
                 console.log(status);
             }
         );
+        new HttpData().getData(`http://job.goodstudio.by/api/categories/`).then(
+            allCategories => {
+                this.setState({allCategories});
+                console.log(allCategories);
+            },
+            status => {
+                console.log(status);
+            }
+        );
     }
+
+    changeLogInStatus = (a) => {
+        this.setState({logIn: a});
+    };
+
+    addNewCategory = () => {
+        console.log("new");
+    };
 
 
     render() {
@@ -57,6 +75,16 @@ class SiderDemo extends React.Component {
             ));
         }
 
+        let categoriesToPage;
+        if (this.state.allCategories) {
+            categoriesToPage = (this.state.allCategories.categories).map((item, i) => (
+                <Menu.Item key={i}>{item.name}</Menu.Item>
+            ));
+        }
+
+        const buttonToAddCategory = this.state.logIn &&
+            <Menu.Item key="3"> <Button onClick={this.addNewCategory}>Add category</Button></Menu.Item>;
+
         return (
             <Layout style={{minHeight: '100vh'}}>
                 <Sider width="300px"
@@ -66,42 +94,22 @@ class SiderDemo extends React.Component {
                        onCollapse={this.onCollapse}
                 >
                     <div className="logo"/>
+                    <div className="menuContainer">
 
-                    <div className="sup">
-
-                        <WrappedNormalLoginForm/>
-
+                        <WrappedNormalLoginForm changeLogInStatus={this.changeLogInStatus}
+                                                logInStatus={this.state.logIn}/>
                     </div>
 
                     <Menu theme="light" defaultSelectedKeys={['1']} mode="inline">
-                        <Menu.Item key="1">
-                            <Icon type="pie-chart"/>
-                            <span>Option 1</span>
-                        </Menu.Item>
-                        <Menu.Item key="2">
-                            <Icon type="desktop"/>
-                            <span>Option 2</span>
-                        </Menu.Item>
-                        <SubMenu
-                            key="sub1"
-                            title={<span><Icon type="user"/><span>User</span></span>}
-                        >
-                            {/* <div className="sup">
-                                <WrappedNormalLoginForm/>
-                            </div>*/}
 
-                        </SubMenu>
                         <SubMenu
                             key="sub2"
-                            title={<span><Icon type="team"/><span>Team</span></span>}
+                            title={<span><Icon type="menu-unfold"/><span>Categories</span></span>}
                         >
-                            <Menu.Item key="6">Team 1</Menu.Item>
-                            <Menu.Item key="8">Team 2</Menu.Item>
+                            {categoriesToPage}
+                            {buttonToAddCategory}
                         </SubMenu>
-                        <Menu.Item key="9">
-                            <Icon type="file"/>
-                            <span>File</span>
-                        </Menu.Item>
+
                     </Menu>
                 </Sider>
 

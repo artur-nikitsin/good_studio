@@ -11,7 +11,6 @@ class NormalLoginForm extends React.Component {
         super(props);
         this.state = {
             registration: false,
-            logIn: false,
             user: null
         };
     };
@@ -27,9 +26,9 @@ class NormalLoginForm extends React.Component {
                 new HttpData().postData(`http://job.goodstudio.by/api/users/`, User).then(
                     userData => {
                         if (userData.status === "ok") {
-                            this.setState({logIn: true});
+                            this.props.changeLogInStatus(true);
                             this.setState({user: userData.user.name});
-                            console.log(this.state);
+
                         }
                     },
                     status => {
@@ -59,7 +58,6 @@ class NormalLoginForm extends React.Component {
     };
 
     logout = () => {
-
         new HttpData().getData(`http://job.goodstudio.by/api/users/logout`).then(
             userData => {
                 console.log(userData);
@@ -68,7 +66,7 @@ class NormalLoginForm extends React.Component {
                 console.log(status);
             }
         );
-        this.setState({logIn: false});
+        this.props.changeLogInStatus(false);
     };
 
 
@@ -76,17 +74,17 @@ class NormalLoginForm extends React.Component {
         this.setState({registration: !this.state.registration});
     };
 
-
     render() {
         const {getFieldDecorator} = this.props.form;
 
-        if (this.state.logIn) {
+        if (this.props.logInStatus) {
             return (
                 <Form onSubmit={this.handleSubmit} className="login-form">
 
                     <Form.Item>
                         <p>Добро пожаловать, {this.state.user} !</p>
-                        <Button onClick={this.logout} type="primary" htmlType="submit" className="login-form-button">
+                        <Button onClick={this.logout} type="primary" htmlType="submit"
+                                className="login-form-button">
                             Logout
                         </Button>
                     </Form.Item>
@@ -129,7 +127,7 @@ class NormalLoginForm extends React.Component {
                             <Checkbox>Remember me</Checkbox>
                         )}
                         {/* <a className="login-form-forgot" href="">Forgot password</a>*/}
-                        <Button  type="primary" htmlType="submit" className="login-form-button">
+                        <Button type="primary" htmlType="submit" className="login-form-button">
                             Register me
                         </Button>
                         <a onClick={this.createNewUser}>Cancel</a>

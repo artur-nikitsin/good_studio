@@ -4,10 +4,10 @@
     margin: 16px;
 }
 
-.sup {
+.menuContainer {
     display: flex;
     justify-content: center;
-    border: 1px solid green;
+
 
 }
 
