@@ -3,7 +3,6 @@ import {
     Form, Icon, Input, Button, Checkbox,
 } from 'antd';
 import './NormalLoginForm.css';
-import User from '../HttpModules/User'
 import HttpData from "../Data/httpData";
 
 class NormalLoginForm extends React.Component {
@@ -44,9 +43,7 @@ class NormalLoginForm extends React.Component {
                 };
                 new HttpData().putData(`http://job.goodstudio.by/api/users/`, newUser).then(
                     userData => {
-                        console.log(userData);
                     },
-
                     status => {
                         console.log(status);
                     }
@@ -60,7 +57,6 @@ class NormalLoginForm extends React.Component {
     logout = () => {
         new HttpData().getData(`http://job.goodstudio.by/api/users/logout`).then(
             userData => {
-                console.log(userData);
             },
             status => {
                 console.log(status);

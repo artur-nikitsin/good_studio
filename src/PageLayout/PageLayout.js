@@ -26,7 +26,6 @@ class SiderDemo extends React.Component {
 
 
     onCollapse = (collapsed) => {
-        console.log(collapsed);
         this.setState({collapsed});
     };
 
@@ -34,17 +33,15 @@ class SiderDemo extends React.Component {
         new HttpData().postData(`http://job.goodstudio.by/api/products/`).then(
             allProductsData => {
                 this.setState({allProductsData});
-
             },
-
             status => {
                 console.log(status);
             }
         );
+
         new HttpData().getData(`http://job.goodstudio.by/api/categories/`).then(
             allCategories => {
                 this.setState({allCategories});
-                console.log(allCategories);
             },
             status => {
                 console.log(status);
@@ -57,9 +54,8 @@ class SiderDemo extends React.Component {
     };
 
     addNewCategory = () => {
-        console.log("new");
-    };
 
+    };
 
     render() {
         let goodsToPage;
